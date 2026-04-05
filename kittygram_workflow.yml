@@ -184,6 +184,7 @@ jobs:
             DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
             GATEWAY_PORT=${{ secrets.GATEWAY_PORT }}
             EOF
+            sed -i 's/\$/$$/g' .env
             sudo docker compose -f docker-compose.production.yml pull
             sudo docker compose -f docker-compose.production.yml down
             sudo docker compose -f docker-compose.production.yml up -d

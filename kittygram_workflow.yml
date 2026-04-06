@@ -8,6 +8,10 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11']
     services:
       postgres:
         image: postgres:13
@@ -30,7 +34,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: ${{ matrix.python-version }}
 
       - name: Install backend dependencies
         run: |
@@ -195,6 +199,10 @@ jobs:
   post_deploy_tests:
     runs-on: ubuntu-latest
     needs: deploy
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11']
 
     steps:
       - name: Checkout repository
@@ -203,7 +211,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: ${{ matrix.python-version }}
 
       - name: Install test dependencies
         run: |
@@ -235,5 +243,6 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
             Kittygram успешно задеплоен.
-            Репозиторий: ${{ github.repository }}
-            Коммит: ${{ github.sha }}
+            Автор push: ${{ github.actor }}
+            Сообщение коммита: ${{ github.event.head_commit.message }}
+            Ссылка на коммит: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
